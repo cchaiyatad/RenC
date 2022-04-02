@@ -1,0 +1,86 @@
+@startuml class
+
+class RenCService << localhost:5001, Application >> {
+}
+
+class CarProviders << Controller >> {
+    {method} + <<GET>>  getCarProvider()
+    {method} + <<GET>>  getCarProviders()
+    {method} + <<POST>> createCarProvider()
+    {method} + <<PUT>>  updateCarProvider()
+    {method} + <<DELETE>>  deleteCarProvider()
+}
+
+class CarProvider << Resource >> {
+    {field} + name
+    {field} + address
+    {field} + tel
+
+    {method} + find ()
+    {method} + findById()
+    {method} + create()
+    {method} + findByIdAndUpdate()
+    {method} + remove()
+}
+
+
+class Auth << Controller >> {
+    {method} + <<POST>> register()
+    {method} + <<POST>> login()
+    {method} + <<GET>> getMe()
+    {method} - sendTokenResponse()
+}
+
+class User << Resource >> {
+    {field} + name
+    {field} + email
+    {field} + tel
+    {field} + role
+    {field} + password
+
+    {method} + create()
+    {method} + findOne()
+    {method} + findById()
+    {method} + getSignedJwtToken()
+    {method} + matchPassword()
+}
+
+class Rentals << Controller >> {
+    {method} + <<GET>> getRentals()
+    {method} + <<GET>> getRental()
+    {method} + <<POST>> addRental()
+    {method} + <<PUT>> updateRental()
+    {method} + <<DELETE>> deleteRental()
+}
+
+class Rental << Resource >> {
+    {field} + startRentDate
+    {field} + endRentDate
+    {field} + user
+    {field} + carProviders
+    {field} + createdAt
+
+    {method} + find ()
+    {method} + findById()
+    {method} + create()
+    {method} + findByIdAndUpdate()
+    {method} + remove()
+}
+
+class Middleware {
+    {method} + protect()
+    {method} + authorize()
+}
+
+RenCService ..> CarProviders
+CarProviders ..> CarProvider
+
+RenCService ..> Auth
+Auth ..> User
+
+RenCService ..> Rentals
+Rentals ..> Rental
+
+RenCService ..> Middleware
+
+@enduml
