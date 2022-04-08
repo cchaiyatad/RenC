@@ -9,9 +9,9 @@
 ├── middleware
 │   └── auth.js             sp
 ├── models
-│   ├── CarProvider.js      b
+│   ├── CarProvider.js      b       /
 │   ├── Rental.js           sp
-│   └── User.js             b
+│   └── User.js             b       /
 ├── routes  
 │   ├── auth.js             sp
 │   ├── carProviders.js     b
