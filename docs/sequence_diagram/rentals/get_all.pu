@@ -1,0 +1,33 @@
+@startuml GET /appointments
+actor       Client       as client
+participant ":server" as server 
+participant "<<Middleware>>\n:middleware" as middleware 
+participant "<<Router>>\n:appointments" as appointments_router 
+participant "<<Controller>>\n:appointments" as appointments_con 
+participant "<<Model>>\n:appointment" as appointments_model 
+database Database as db
+
+client -> server : GET /appointments
+
+server -> middleware : protect
+middleware -> appointments_router  : app.use("/appointments", appointments)
+appointments_router -> appointments_con : getAppointments
+activate appointments_con
+    
+    alt req.user.role === 'user'
+        appointments_con -> appointments_model : find({ user: req.user.id }).populate('hospital')
+        activate appointments_model
+    else req.user.role === 'admin'
+        appointments_con -> appointments_model : find().populate('hospital')
+    end
+
+    appointments_model -> db : AppointmentSchema
+        activate db
+        db --> appointments_model : appointments
+        deactivate db
+    deactivate appointments_model
+    appointments_model --> appointments_con : appointments
+deactivate appointments_con
+
+appointments_con --> client :respond
+@enduml

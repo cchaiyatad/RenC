@@ -1,0 +1,27 @@
+@startuml GET /appointments/:id
+actor       Client       as client
+participant ":server" as server 
+participant "<<Middleware>>\n:middleware" as middleware 
+participant "<<Router>>\n:appointments" as appointments_router 
+participant "<<Controller>>\n:appointments" as appointments_con 
+participant "<<Model>>\n:Appointment" as appointments_model 
+database Database as db
+
+client -> server : GET /appointments/:id
+
+server -> middleware : protect
+middleware -> appointments_router : app.use("/appointments/:id", appointments)
+appointments_router -> appointments_con : getAppointment
+activate appointments_con
+    appointments_con -> appointments_model : findById(req.params.id).populate('hospital')
+    activate appointments_model
+    appointments_model -> db : AppointmentSchema
+        activate db
+        db --> appointments_model : appointment
+        deactivate db
+    deactivate appointments_model
+    appointments_model --> appointments_con : appointment
+deactivate appointments_con
+
+appointments_con --> client :respond
+@enduml

@@ -1,0 +1,26 @@
+@startuml POST /login
+actor       Client       as client
+participant ":server" as server 
+participant "<<Router>>\n:auth" as auth_router 
+participant "<<Controller>>\n:auth" as auth_con 
+participant "<<Model>>\n:user" as user_model 
+database Database as db
+
+client -> server : POST /auth/login
+
+server -> auth_router : app.use("/auth/login", auth)
+auth_router -> auth_con : login
+activate auth_con
+    auth_con -> user_model : findOne(req.body.email)
+    activate user_model
+    user_model -> db : userSchema
+        activate db
+        db --> user_model : user
+        deactivate db
+    user_model --> auth_con : user
+    deactivate user_model
+    auth_con -> auth_con : matchPassword(req.body.password)
+auth_con -> client :respond and access_token
+deactivate auth_con
+
+@enduml

@@ -1,0 +1,39 @@
+@startuml GET /me
+actor       Client       as client
+participant ":server" as server 
+participant "<<Router>>\n:auth" as auth_router 
+participant "<<Middleware>>\n:middleware" as middleware 
+participant "<<Controller>>\n:auth" as auth_con 
+participant "<<Model>>\n:user" as user_model 
+database Database as db
+
+client -> server : GET /auth/me
+
+server -> auth_router : app.use("/auth/me", auth)
+auth_router -> middleware : protect
+activate middleware
+    middleware -> middleware : jwt.verify(token, process.env.JWT_SECRET)
+    middleware -> user_model : findById(decoded.id)
+    activate user_model
+        user_model -> db : userSchema
+            activate db
+            db --> user_model : user
+            deactivate db
+    user_model --> middleware : user
+    deactivate user_model
+middleware -> auth_con : getMe
+deactivate middleware
+
+activate auth_con
+    auth_con -> user_model : findById(req.user.id)
+    activate user_model
+    user_model -> db : userSchema
+        activate db
+        db --> user_model : user
+        deactivate db
+    user_model --> auth_con : user
+    deactivate user_model
+auth_con -> client :respond
+deactivate auth_con
+
+@enduml

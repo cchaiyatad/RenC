@@ -1,0 +1,25 @@
+@startuml GET /carProviders
+actor       Client       as client
+participant ":server" as server 
+participant "<<Router>>\n:carProviders" as carProviders_router 
+participant "<<Controller>>\n:carProviders" as carProviders_con 
+participant "<<Model>>\n:carProvider" as carProviders_model 
+database Database as db
+
+client -> server : GET /carProviders
+
+server -> carProviders_router : app.use("/carProviders", carProviders)
+carProviders_router -> carProviders_con : getHospitals
+activate carProviders_con
+    carProviders_con -> carProviders_model : find()
+    activate carProviders_model
+    carProviders_model -> db : HospitalSchema
+        activate db
+        db --> carProviders_model : carProviders
+        deactivate db
+    deactivate carProviders_model
+    carProviders_model --> carProviders_con : carProviders
+deactivate carProviders_con
+
+carProviders_con -> client :respond
+@enduml

@@ -72,13 +72,13 @@ class Middleware {
     {method} + authorize()
 }
 
-RenCService ..> CarProviders
+RenCService ..> CarProviders : <<ResourcePath>>\n/carproviders , \n <<ResourcePath>>\n/carproviders/:id
 CarProviders ..> CarProvider
 
-RenCService ..> Auth
+RenCService ..> Auth : <<ResourcePath>>\n/appointments
 Auth ..> User
 
-RenCService ..> Rentals
+RenCService ..> Rentals : <<ResourcePath>>\n/appointments
 Rentals ..> Rental
 
 RenCService ..> Middleware
