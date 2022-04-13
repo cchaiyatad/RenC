@@ -1,33 +1,32 @@
-@startuml GET /appointments
+@startuml GET /rentals
 actor       Client       as client
 participant ":server" as server 
+participant "<<Router>>\n:rentals" as rentals_router 
 participant "<<Middleware>>\n:middleware" as middleware 
-participant "<<Router>>\n:appointments" as appointments_router 
-participant "<<Controller>>\n:appointments" as appointments_con 
-participant "<<Model>>\n:appointment" as appointments_model 
+participant "<<Controller>>\n:rentals" as rentals_con 
+participant "<<Model>>\n:rental" as rentals_model 
 database Database as db
 
-client -> server : GET /appointments
-
-server -> middleware : protect
-middleware -> appointments_router  : app.use("/appointments", appointments)
-appointments_router -> appointments_con : getAppointments
-activate appointments_con
+client -> server : GET /rentals
+server -> rentals_router  : app.use("/rentals", rentals)
+rentals_router -> middleware : protect
+middleware -> rentals_con : getRentals
+activate rentals_con
     
     alt req.user.role === 'user'
-        appointments_con -> appointments_model : find({ user: req.user.id }).populate('hospital')
-        activate appointments_model
+        rentals_con -> rentals_model : find({ user: req.user.id }).populate('carProvider')
+        activate rentals_model
     else req.user.role === 'admin'
-        appointments_con -> appointments_model : find().populate('hospital')
+        rentals_con -> rentals_model : find().populate('carProvider')
     end
 
-    appointments_model -> db : AppointmentSchema
+    rentals_model -> db : RentalSchema
         activate db
-        db --> appointments_model : appointments
+        db --> rentals_model : rentals
         deactivate db
-    deactivate appointments_model
-    appointments_model --> appointments_con : appointments
-deactivate appointments_con
+    deactivate rentals_model
+    rentals_model --> rentals_con : rentals
+deactivate rentals_con
 
-appointments_con --> client :respond
+rentals_con --> client :respond
 @enduml

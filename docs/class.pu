@@ -4,9 +4,12 @@ class RenCService << localhost:5001, Application >> {
 }
 
 class CarProviders << Controller >> {
-    {method} + <<GET>>  getCarProvider()
     {method} + <<GET>>  getCarProviders()
     {method} + <<POST>> createCarProvider()
+}
+
+class CarProvidersID << Controller >> {
+    {method} + <<GET>>  getCarProvider()
     {method} + <<PUT>>  updateCarProvider()
     {method} + <<DELETE>>  deleteCarProvider()
 }
@@ -28,6 +31,7 @@ class Auth << Controller >> {
     {method} + <<POST>> register()
     {method} + <<POST>> login()
     {method} + <<GET>> getMe()
+    {method} + <<GET>> logout()
     {method} - sendTokenResponse()
 }
 
@@ -47,8 +51,11 @@ class User << Resource >> {
 
 class Rentals << Controller >> {
     {method} + <<GET>> getRentals()
-    {method} + <<GET>> getRental()
     {method} + <<POST>> addRental()
+}
+
+class RentalsID << Controller >> {
+    {method} + <<GET>> getRental()
     {method} + <<PUT>> updateRental()
     {method} + <<DELETE>> deleteRental()
 }
@@ -72,14 +79,20 @@ class Middleware {
     {method} + authorize()
 }
 
-RenCService ..> CarProviders : <<ResourcePath>>\n/carproviders , \n <<ResourcePath>>\n/carproviders/:id
+RenCService ..> CarProviders : <<ResourcePath>>\n/carproviders
 CarProviders ..> CarProvider
 
-RenCService ..> Auth : <<ResourcePath>>\n/appointments
+RenCService ..> CarProvidersID : <<ResourcePath>>\n/carproviders/:id
+CarProvidersID ..> CarProvider
+
+RenCService ..> Auth : <<ResourcePath>>\n/auth
 Auth ..> User
 
-RenCService ..> Rentals : <<ResourcePath>>\n/appointments
+RenCService ..> Rentals : <<ResourcePath>>\n/rental
 Rentals ..> Rental
+
+RenCService ..> RentalsID : <<ResourcePath>>\n/rental/:id
+RentalsID ..> Rental
 
 RenCService ..> Middleware
 

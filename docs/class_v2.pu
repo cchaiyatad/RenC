@@ -1,0 +1,68 @@
+@startuml class
+
+class RenCService << localhost:5001, Application >> {
+}
+
+class CarProviders << Resource >> {
+    {method} + <<GET>>  getCarProviders()
+    {method} + <<POST>> createCarProvider()
+}
+
+class CarProvidersID << Resource >> {
+    {field} + name
+    {field} + address
+    {field} + tel
+
+    {method} + <<GET>>  getCarProvider()
+    {method} + <<PUT>>  updateCarProvider()
+    {method} + <<DELETE>>  deleteCarProvider()
+}
+
+
+class Auth << Resource >> {
+    {field} + name
+    {field} + email
+    {field} + tel
+    {field} + role
+    {field} + password
+
+    {method} + <<POST>> register()
+    {method} + <<POST>> login()
+    {method} + <<GET>> getMe()
+    {method} + <<GET>> logout()
+}
+
+
+class Rentals << Resource >> {
+    {method} + <<GET>> getRentals()
+    {method} + <<POST>> addRental()
+}
+
+class RentalsID << Resource >> {
+    {field} + startRentDate
+    {field} + endRentDate
+    {field} + user
+    {field} + carProviders
+    {field} + createdAt
+
+    {method} + <<GET>> getRental()
+    {method} + <<PUT>> updateRental()
+    {method} + <<DELETE>> deleteRental()
+}
+
+class Middleware {
+    {method} + protect()
+    {method} + authorize()
+}
+
+RenCService ..> CarProviders : <<ResourcePath>>\n/carproviders
+CarProviders ..> CarProvidersID : <<ResourcePath>>\n/:id
+
+RenCService ..> Auth : <<ResourcePath>>\n/auth
+
+RenCService ..> Rentals : <<ResourcePath>>\n/rentals
+Rentals ..> RentalsID : <<ResourcePath>>\n/:id
+
+RenCService ..> Middleware
+
+@enduml

@@ -2,35 +2,19 @@
 
 ## Works
 
+``` text
 ├── controllers
-│   ├── auth.js             b       ///
-│   ├── carProviders.js     b       ///
-│   └── rentals.js          sp      //
+│   ├── auth.js             Chaiyatad
+│   ├── carProviders.js     Chaiyatad
+│   └── rentals.js          Marineya
 ├── middleware
-│   └── auth.js             sp      //
+│   └── auth.js             Marineya
 ├── models
-│   ├── CarProvider.js      b       /
-│   ├── Rental.js           sp      //
-│   └── User.js             b       /
+│   ├── CarProvider.js      Chaiyatad
+│   ├── Rental.js           Marineya
+│   └── User.js             Chaiyatad
 ├── routes  
-│   ├── auth.js             sp      ///
-│   ├── carProviders.js     b       ///
-│   └── rentals.js          sp      //
-
-
-## slide
-
-register
-login
-getMe
-logout
-getRentals
-getRental
-addRental
-updateRental
-deleteRental
-getCarProviders
-getCarProvider
-addCarProvider
-updateCarProvider
-deleteCarProvider
+│   ├── auth.js             Marineya
+│   ├── carProviders.js     Chaiyatad
+│   └── rentals.js          Marineya
+```

@@ -2,6 +2,7 @@
 actor       Client       as client
 participant ":server" as server 
 participant "<<Router>>\n:carProviders" as carProviders_router 
+participant "<<Middleware>>\n:middleware" as middleware 
 participant "<<Controller>>\n:carProviders" as carProviders_con 
 participant "<<Model>>\n:carProvider" as carProviders_model 
 database Database as db
@@ -9,7 +10,8 @@ database Database as db
 client -> server : GET /carProviders/:id
 
 server -> carProviders_router : app.use("/carProviders/:id", carProviders)
-carProviders_router -> carProviders_con : getCarProvider
+carProviders_router -> middleware : protect 
+middleware -> carProviders_con : getCarProvider
 activate carProviders_con
     carProviders_con -> carProviders_model : findById(req.params.id)
     activate carProviders_model
@@ -17,9 +19,9 @@ activate carProviders_con
         activate db
         db --> carProviders_model : carProvider
         deactivate db
-    deactivate carProviders_model
     carProviders_model --> carProviders_con : carProvider
-deactivate carProviders_con
+    deactivate carProviders_model
 
 carProviders_con -> client :respond
+deactivate carProviders_con
 @enduml

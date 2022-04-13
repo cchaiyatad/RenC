@@ -86,10 +86,26 @@ exports.addRental = async (req, res, next) => {
             });
         }
 
-        if (startRentDate >= endRentDate) {
+        const parsedStartRentDate = Date.parse(startRentDate)
+        const parsedEndRentDate = Date.parse(endRentDate)
+        if (isNaN(parsedStartRentDate) || isNaN(parsedEndRentDate)) {
+            return res.status(400).json({
+                success: false,
+                message: `startRentDate or endRentDate are invalid`,
+            });
+        }
+
+        if (parsedStartRentDate >= parsedEndRentDate) {
             return res.status(400).json({
                 success: false,
                 message: `endRentDate cannot come before or equal to startRentDate`,
+            });
+        }
+
+        if (parsedStartRentDate < Date.now()) {
+            return res.status(400).json({
+                success: false,
+                message: `startRentDate can not be in the past`,
             });
         }
 
@@ -115,7 +131,6 @@ exports.addRental = async (req, res, next) => {
                 message: `The user with ID ${req.user.id} has already made 3 rentals`,
             });
         }
-        console.log(req.body)
 
         const rental = await Rental.create(req.body);
 
@@ -153,6 +168,33 @@ exports.updateRental = async (req, res, next) => {
             return res.status(401).json({
                 success: false,
                 message: `User ${req.user.id} is not authorized to update this rental`,
+            });
+        }
+
+        const startRentDate = req.body.startRentDate || rental.startRentDate
+        const endRentDate = req.body.endRentDate || rental.endRentDate
+
+        const parsedStartRentDate = Date.parse(startRentDate)
+        const parsedEndRentDate = Date.parse(endRentDate)
+
+        if (isNaN(parsedStartRentDate) || isNaN(parsedEndRentDate)) {
+            return res.status(400).json({
+                success: false,
+                message: `startRentDate or endRentDate are invalid`,
+            });
+        }
+
+        if (parsedStartRentDate >= parsedEndRentDate) {
+            return res.status(400).json({
+                success: false,
+                message: `endRentDate cannot come before or equal to startRentDate`,
+            });
+        }
+
+        if (parsedStartRentDate < Date.now()) {
+            return res.status(400).json({
+                success: false,
+                message: `startRentDate can not be in the past`,
             });
         }
 

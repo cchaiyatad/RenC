@@ -1,27 +1,26 @@
-@startuml GET /appointments/:id
+@startuml GET /rentals/:id
 actor       Client       as client
 participant ":server" as server 
+participant "<<Router>>\n:rentals" as rentals_router 
 participant "<<Middleware>>\n:middleware" as middleware 
-participant "<<Router>>\n:appointments" as appointments_router 
-participant "<<Controller>>\n:appointments" as appointments_con 
-participant "<<Model>>\n:Appointment" as appointments_model 
+participant "<<Controller>>\n:rentals" as rentals_con 
+participant "<<Model>>\n:Rental" as rentals_model 
 database Database as db
 
-client -> server : GET /appointments/:id
-
-server -> middleware : protect
-middleware -> appointments_router : app.use("/appointments/:id", appointments)
-appointments_router -> appointments_con : getAppointment
-activate appointments_con
-    appointments_con -> appointments_model : findById(req.params.id).populate('hospital')
-    activate appointments_model
-    appointments_model -> db : AppointmentSchema
+client -> server : GET /rentals/:id
+server -> rentals_router : app.use("/rentals/:id", rentals)
+rentals_router -> middleware : protect
+middleware -> rentals_con : getRental
+activate rentals_con
+    rentals_con -> rentals_model : findById(req.params.id).populate('carProvider')
+    activate rentals_model
+    rentals_model -> db : RentalSchema
         activate db
-        db --> appointments_model : appointment
+        db --> rentals_model : rental
         deactivate db
-    deactivate appointments_model
-    appointments_model --> appointments_con : appointment
-deactivate appointments_con
+    rentals_model --> rentals_con : rental
+    deactivate rentals_model
 
-appointments_con --> client :respond
+rentals_con --> client :respond
+deactivate rentals_con
 @enduml
