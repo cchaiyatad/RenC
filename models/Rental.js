@@ -3,11 +3,12 @@ const mongoose = require("mongoose");
 const RentalSchema = new mongoose.Schema({
   startRentDate: {
     type: Date,
-    required: true,
+    required: [true, "Please add a startRentDate"],
+
   },
   endRentDate: {
     type: Date,
-    required: true,
+    required: [true, "Please add an endRentDate"],
   },
   user: {
     type: mongoose.Schema.ObjectId,
@@ -16,8 +17,8 @@ const RentalSchema = new mongoose.Schema({
   },
   carProvider: {
     type: mongoose.Schema.ObjectId,
-    ref: "Hospital",
-    require: true,
+    ref: "CarProvider",
+    require: [true, "Please add a carProvider"],
   },
   createdAt: {
     type: Date,

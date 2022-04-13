@@ -26,18 +26,17 @@ const CarProviderSchema = new mongoose.Schema({
     toObject: { virtuals: true },
 });
 
-// TODO: wait for Rental
-// CarProviderSchema.pre('remove', async function (next) {
-//     console.log(`Rentals being removed from carProvider ${this._id}`);
-//     await this.model('Rental').deleteMany({ carProvider: this._id })
-//     next()
-// });
+CarProviderSchema.pre('remove', async function (next) {
+    console.log(`Rentals being removed from carProvider ${this._id}`);
+    await this.model('Rental').deleteMany({ carProvider: this._id })
+    next()
+});
 
-// CarProviderSchema.virtual('rentals', {
-//     ref: 'Rental',
-//     localField: '_id',
-//     foreignField: 'CarProvider',
-//     justOne: false
-// });
+CarProviderSchema.virtual('rentals', {
+    ref: 'Rental',
+    localField: '_id',
+    foreignField: 'CarProvider',
+    justOne: false
+});
 
 module.exports = mongoose.model('CarProvider', CarProviderSchema)
